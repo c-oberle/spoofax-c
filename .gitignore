@@ -1,3 +1,8 @@
+C/target/
+C/.cache/
+C/.settings/
+C/.externalToolBuilders/
+
 *.aterm
 *.class
 

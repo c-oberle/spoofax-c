@@ -1,1 +1,0 @@
-Module("runtime/editor/dynrule",[Rules([SDefT("editor-init",[],[],[])])])

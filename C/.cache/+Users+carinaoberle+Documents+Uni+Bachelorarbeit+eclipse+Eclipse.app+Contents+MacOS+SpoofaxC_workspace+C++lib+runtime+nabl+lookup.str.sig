@@ -1,1 +1,0 @@
-Module("runtime/nabl/lookup",[Imports([(),(),(),(),()]),Rules([SDefT("nabl-lookup",[],[VarDec("ns",ConstType(SortNoArgs("ATerm"))),VarDec("name",ConstType(SortNoArgs("ATerm")))],[]),SDefT("nabl-lookup-all",[],[VarDec("ns",ConstType(SortNoArgs("ATerm")))],[])])])

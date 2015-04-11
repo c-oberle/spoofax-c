@@ -1,1 +1,0 @@
-Module("runtime/nabl/complete",[Imports([(),(),()]),Signature([Constructors([OpDecl("COMPLETION",FunType([ConstType(SortNoArgs("String"))],ConstType(SortNoArgs("COMPLETION"))))])]),Rules([SDefT("nabl-propose-completions",[],[],[])])])

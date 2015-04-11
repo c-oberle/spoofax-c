@@ -1,1 +1,0 @@
-Module("runtime/editor/interop",[Rules([SDefT("foreign-call",[],[VarDec("lang",ConstType(SortNoArgs("ATerm"))),VarDec("strategy",ConstType(SortNoArgs("ATerm")))],[])])])

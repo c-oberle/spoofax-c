@@ -1,1 +1,0 @@
-Module("editor/C-Outliner",[Imports([(),(),(),()]),Rules([SDefT("to-outline-label",[],[],[])])])

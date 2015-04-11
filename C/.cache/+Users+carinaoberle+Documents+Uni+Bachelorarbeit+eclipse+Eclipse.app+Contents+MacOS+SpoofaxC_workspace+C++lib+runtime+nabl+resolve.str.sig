@@ -1,1 +1,0 @@
-Module("runtime/nabl/resolve",[Imports([(),(),(),(),()]),Rules([SDefT("nabl-is-reference",[],[],[]),SDefT("nabl-has-reference",[],[],[]),SDefT("nabl-has-reference",[],[],[]),SDefT("nabl-collect-all-resolved-defs",[],[],[]),SDefT("nabl-collect-one-resolved-def",[],[],[])])])
