@@ -1,0 +1,19 @@
+module editor/C-Outliner.generated
+
+imports
+  
+  include/C
+  lib/runtime/editor/outline-library
+
+rules
+  
+  to-outline-label = ?StructOrUnionDec(_, <id>, _)
+  to-outline-label = ?Cond(<id>, _, _)
+  to-outline-label = ?DeclQualifierStaticAssign(<id>, _, _)
+  to-outline-label = ?EnumSpecifier(<id>, _)
+  to-outline-label = ?EnumSpecifierTrComma(<id>, _)
+  to-outline-label = ?If(_, <id>)
+  to-outline-label = ?If(_, <id>, _)
+  to-outline-label = ?Switch(_, <id>)
+  to-outline-label = ?While(_, <id>)
+  to-outline-label = ?Do(<id>, _)

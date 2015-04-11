@@ -1,0 +1,195 @@
+/**
+* Unit tests for the C language.
+*/
+module test-example
+
+language C
+start symbol ExternalDeclarationSeq
+
+/************************************
+ * tests for typedef-disambiguation *
+ ************************************/
+ 
+setup [[
+  typedef int a; 
+]] 
+
+test Pointer Declaration[[   
+  void f(){
+	a* b;
+  }
+]] parse to ExtDecSeq([_,FunDef(_,_,_,Block(Some(BlockItems([Dec(_,_)]))))])
+
+test Multiplication [[
+  void f(int a, int b) {
+	a* b;
+  }
+]] parse to ExtDecSeq([_,FunDef(_,_,_,Block(Some(BlockItems([ExprStm(_)]))))])
+
+test Pointer Cast[[   
+  void f(){
+	(a) *b;
+  }
+]]
+
+test Multiplication with Parantheses [[
+  void f(int a, int b) {
+	(a) *b;
+  }
+]]
+
+test Double Cast[[   
+  void f(){
+	(a) + (a)(b);
+  }
+]]
+
+test Add with Function Call [[
+  void f(int a, int b) {
+	(a) + (a)(b);
+  }
+]]
+
+test Cast[[   
+  void f(){
+	(a)(b);
+  }
+]]
+
+test Function call [[
+  void f(int a, int b) {
+	(a)(b);
+  }
+]]
+
+/**************************
+ * general language tests *
+ **************************/
+ 
+test Declaration [[
+  int i;	
+]]
+
+test Assignments [[
+  int a = 0;
+  int b = 1;
+]] 0 errors
+
+test Functions [[
+  int foo() { return 0; }
+  int bar(void* c) { return *(c + sizeof(int)); }
+]] 0 errors
+
+test Missing Semicolon [[
+  int i	
+]] parse fails
+
+test Missing Return Type [[
+  foo() { return 0; }	
+]] parse fails
+
+test Dangling Else [[
+  void f(){
+  	if(a) if(b) c; else d;
+  }	
+]]
+
+test Pointer [[
+	void callSwap(int* a, int* b) {
+		swap(&a, &b);
+	}
+]]
+
+test Static Counter [[
+	void count() {
+		static int i = 0;
+		i++;
+	}
+]]
+
+test String Copy [[
+	char* stringCopy(char *str) {
+		char * res;
+	
+		while(*str != '\0')	
+		{
+			*res++ = *str++;
+		}		
+	
+		return res;
+	}
+]]
+
+test Switch [[
+	void testSwitch()
+	{
+		switch(x)
+		{
+			case 7: i++;
+			default: i--;
+		}
+	}
+]]
+
+test Function Pointer [[
+	void (*funptr)();
+]]
+
+test Standard Include [[
+	#include <stdio.h>
+]]
+
+test System Include [[
+	#include "file.h"
+]]
+
+test Array Initialization [[
+	int arr[6] = {[4] = 29, [2] = 15};
+]]
+
+test Enum [[
+	enum fruits_e {
+		APPLE = 2,
+		PEAR,
+		BANANA
+	};
+
+	enum fruits_e myFruit = APPLE;
+]]
+
+test Struct [[
+	struct Foo {
+		int a;
+		void* as;
+	};
+]]
+
+test Typedef Union [[
+	typedef union {
+ 		char __mbstate8[128];
+ 		long long _mbstateL;
+	} __mbstate_t;
+
+	typedef __mbstate_t __darwin_mbstate_t;
+]]
+
+test Vector Struct [[
+	struct vector3_t {
+		int x, y, z;
+	} v1 = {.x = 1, 2, 3};
+
+	void vecFun() {
+		struct vector3_t *v2 = &v1;
+		v2->x = 0;
+	}
+]]
+
+test Referencing and Dereferencing [[
+	int fun() {
+		p = &a0;
+		*p = 3;
+		a0 += 5;
+
+		return a0;
+	}
+]]

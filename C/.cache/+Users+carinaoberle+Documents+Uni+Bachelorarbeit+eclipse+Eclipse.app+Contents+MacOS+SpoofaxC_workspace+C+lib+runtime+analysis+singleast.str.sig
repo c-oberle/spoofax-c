@@ -1,0 +1,1 @@
+Module("singleast",[Imports([(),()]),Rules([SDefT("analysis-singleast",[],[],[]),SDefT("analysis-singleast",[VarDec("collector",ConstType(SortNoArgs("ATerm")))],[VarDec("parse-time",ConstType(SortNoArgs("ATerm")))],[])])])

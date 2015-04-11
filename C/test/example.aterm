@@ -1,0 +1,992 @@
+( TranslationUnit(
+    Some(
+      ExtDecSeq(
+        [ Include("test")
+        , StdInclude("test")
+        , FunDef(
+            DecSpecifierSeq([TypeSpecifier(Void())])
+          , Declarator(None(), DeclIds(Id("testSwitch"), None()))
+          , None()
+          , Block(
+              Some(
+                BlockItems(
+                  [ SelectionStm(
+                      Switch(
+                        Expr([PrimaryExpr(Id("x"))])
+                      , Block(
+                          Some(
+                            BlockItems(
+                              [ LabeledStm(
+                                  Case(
+                                    ConstExpr(PrimaryExpr(Lit(IntLit("7"))))
+                                  , ExprStm(Some(Expr([PostIncr(PrimaryExpr(Id("i")))])))
+                                  )
+                                )
+                              , LabeledStm(
+                                  Default(
+                                    ExprStm(Some(Expr([PostDecr(PrimaryExpr(Id("i")))])))
+                                  )
+                                )
+                              ]
+                            )
+                          )
+                        )
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq([TypeSpecifier(Int())])
+            , Some(
+                InitDeclaratorList(
+                  [ InitDeclarator(
+                      Declarator(None(), Id("a0"))
+                    , Mul(
+                        PrimaryExpr(
+                          ParenExpr(
+                            Expr(
+                              [Plus(
+                                 PrimaryExpr(Lit(IntLit("1")))
+                               , PrimaryExpr(Lit(IntLit("2")))
+                               )]
+                            )
+                          )
+                        )
+                      , PrimaryExpr(Lit(IntLit("3")))
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq([TypeSpecifier(Int())])
+            , Some(
+                InitDeclaratorList(
+                  [Declarator(Some(PointerSeq([Pointer(None())])), Id("p"))]
+                )
+              )
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq([TypeSpecifier(Float())])
+            , Some(
+                InitDeclaratorList(
+                  [ Declarator(Some(PointerSeq([Pointer(None())])), Id("f1"))
+                  , InitDeclarator(
+                      Declarator(None(), Id("f2"))
+                    , PrimaryExpr(Lit(FloatLit("2.5")))
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq([TypeSpecifier(Void())])
+            , Some(
+                InitDeclaratorList(
+                  [ Declarator(
+                      None()
+                    , DeclIds(
+                        DeclPar(
+                          Declarator(Some(PointerSeq([Pointer(None())])), Id("funptr"))
+                        )
+                      , None()
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq([TypeSpecifier(Int())])
+            , Some(
+                InitDeclaratorList(
+                  [ InitDeclarator(
+                      Declarator(
+                        None()
+                      , DeclQualifierAssign(
+                          Id("arr")
+                        , None()
+                        , Some(PrimaryExpr(Lit(IntLit("4"))))
+                        )
+                      )
+                    , Initializer(
+                        InitializerList(
+                          [ InitializerSeq(None(), PrimaryExpr(Lit(IntLit("1"))))
+                          , InitializerSeq(None(), PrimaryExpr(Lit(IntLit("2"))))
+                          , InitializerSeq(None(), PrimaryExpr(Lit(IntLit("3"))))
+                          , InitializerSeq(None(), PrimaryExpr(Lit(IntLit("4"))))
+                          ]
+                        )
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq([TypeSpecifier(Int())])
+            , Some(
+                InitDeclaratorList(
+                  [Declarator(None(), DeclQualifierAssign(Id("arr2"), None(), None()))]
+                )
+              )
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq([TypeSpecifier(Int())])
+            , Some(
+                InitDeclaratorList(
+                  [ InitDeclarator(
+                      Declarator(
+                        None()
+                      , DeclQualifierAssign(
+                          Id("arr3")
+                        , None()
+                        , Some(PrimaryExpr(Lit(IntLit("6"))))
+                        )
+                      )
+                    , Initializer(
+                        InitializerList(
+                          [ InitializerSeq(
+                              Some(
+                                Designation(
+                                  DesignatorList([BracketDesignator(ConstExpr(PrimaryExpr(Lit(IntLit("4")))))])
+                                )
+                              )
+                            , PrimaryExpr(Lit(IntLit("29")))
+                            )
+                          , InitializerSeq(
+                              Some(
+                                Designation(
+                                  DesignatorList([BracketDesignator(ConstExpr(PrimaryExpr(Lit(IntLit("2")))))])
+                                )
+                              )
+                            , PrimaryExpr(Lit(IntLit("15")))
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq(
+                [ TypeSpecifier(
+                    Enum(
+                      EnumSpecifier(
+                        Some(Id("fruits_e"))
+                      , EnumeratorList(
+                          [ EnumeratorDef(Id("APPLE"), ConstExpr(PrimaryExpr(Lit(IntLit("2")))))
+                          , EnumeratorConst(Id("PEAR"))
+                          , EnumeratorConst(Id("BANANA"))
+                          ]
+                        )
+                      )
+                    )
+                  )
+                ]
+              )
+            , None()
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq([TypeSpecifier(Enum(EnumIdentifier(Id("fruits_e"))))])
+            , Some(
+                InitDeclaratorList(
+                  [InitDeclarator(Declarator(None(), Id("myFruit")), PrimaryExpr(Id("APPLE")))]
+                )
+              )
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq(
+                [ TypeSpecifier(
+                    StructOrUnion(
+                      StructOrUnionDec(
+                        Struct()
+                      , Some(Id("Foo"))
+                      , StructDecList(
+                          [ StructDec(
+                              SpecifierQualifierList([TypeSpecifier(Int())])
+                            , StructDeclList([Declarator(None(), Id("a"))])
+                            )
+                          , StructDec(
+                              SpecifierQualifierList([TypeSpecifier(Void())])
+                            , StructDeclList(
+                                [Declarator(Some(PointerSeq([Pointer(None())])), Id("as"))]
+                              )
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  )
+                ]
+              )
+            , None()
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq([StorageClassSpecifier(Typedef()), TypeSpecifier(Int())])
+            , Some(InitDeclaratorList([Declarator(None(), Id("int1"))]))
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq([StorageClassSpecifier(Typedef()), TypeSpecifier(TypedefName(Id("int1")))])
+            , Some(InitDeclaratorList([Declarator(None(), Id("int2"))]))
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq([TypeSpecifier(TypedefName(Id("int2")))])
+            , Some(InitDeclaratorList([Declarator(None(), Id("i"))]))
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq([TypeSpecifier(Int())])
+            , Some(InitDeclaratorList([Declarator(None(), Id("test0"))]))
+            )
+          )
+        , FunDef(
+            DecSpecifierSeq([TypeSpecifier(Void())])
+          , Declarator(
+              None()
+            , DeclParams(
+                Id("testFun")
+              , ParamList(
+                  [ParamDec(
+                     DecSpecifierSeq([TypeSpecifier(Int())])
+                   , Declarator(None(), Id("param"))
+                   )]
+                )
+              )
+            )
+          , None()
+          , Block(None())
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq(
+                [ StorageClassSpecifier(Typedef())
+                , TypeSpecifier(
+                    StructOrUnion(
+                      StructOrUnionDec(
+                        Union()
+                      , None()
+                      , StructDecList(
+                          [ StructDec(
+                              SpecifierQualifierList([TypeSpecifier(Char())])
+                            , StructDeclList(
+                                [ Declarator(
+                                    None()
+                                  , DeclQualifierAssign(
+                                      Id("__mbstate8")
+                                    , None()
+                                    , Some(PrimaryExpr(Lit(IntLit("128"))))
+                                    )
+                                  )
+                                ]
+                              )
+                            )
+                          , StructDec(
+                              SpecifierQualifierList([TypeSpecifier(Long()), TypeSpecifier(Long())])
+                            , StructDeclList([Declarator(None(), Id("_mbstateL"))])
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  )
+                ]
+              )
+            , Some(InitDeclaratorList([Declarator(None(), Id("__mbstate_t"))]))
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq([StorageClassSpecifier(Typedef()), TypeSpecifier(TypedefName(Id("__mbstate_t")))])
+            , Some(InitDeclaratorList([Declarator(None(), Id("__darwin_mbstate_t"))]))
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq([TypeSpecifier(TypedefName(Id("__darwin_mbstate_t")))])
+            , Some(InitDeclaratorList([Declarator(None(), Id("test"))]))
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq(
+                [ TypeSpecifier(
+                    StructOrUnion(
+                      StructOrUnionDec(
+                        Struct()
+                      , Some(Id("vector3_t"))
+                      , StructDecList(
+                          [ StructDec(
+                              SpecifierQualifierList([TypeSpecifier(Int())])
+                            , StructDeclList(
+                                [ Declarator(None(), Id("x"))
+                                , Declarator(None(), Id("y"))
+                                , Declarator(None(), Id("z"))
+                                ]
+                              )
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  )
+                ]
+              )
+            , Some(
+                InitDeclaratorList(
+                  [ InitDeclarator(
+                      Declarator(None(), Id("v1"))
+                    , Initializer(
+                        InitializerList(
+                          [ InitializerSeq(
+                              Some(Designation(DesignatorList([DotDesignator(Id("x"))])))
+                            , PrimaryExpr(Lit(IntLit("1")))
+                            )
+                          , InitializerSeq(None(), PrimaryExpr(Lit(IntLit("2"))))
+                          , InitializerSeq(None(), PrimaryExpr(Lit(IntLit("3"))))
+                          ]
+                        )
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , FunDef(
+            DecSpecifierSeq([TypeSpecifier(Void())])
+          , Declarator(None(), DeclIds(Id("vecFun"), None()))
+          , None()
+          , Block(
+              Some(
+                BlockItems(
+                  [ Dec(
+                      DecSpecifierSeq([TypeSpecifier(StructOrUnion(StructOrUnionSpecifier(Struct(), Id("vector3_t"))))])
+                    , Some(
+                        InitDeclaratorList(
+                          [ InitDeclarator(
+                              Declarator(Some(PointerSeq([Pointer(None())])), Id("v2"))
+                            , CastExpr(Ref(), PrimaryExpr(Id("v1")))
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  , ExprStm(
+                      Some(
+                        Expr(
+                          [ Assign(
+                              PMemberAccess(PrimaryExpr(Id("v2")), Id("x"))
+                            , AssignOp()
+                            , PrimaryExpr(Lit(IntLit("0")))
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , FunDef(
+            DecSpecifierSeq([TypeSpecifier(Void())])
+          , Declarator(None(), DeclIds(Id("arrFun"), None()))
+          , None()
+          , Block(
+              Some(
+                BlockItems(
+                  [ ExprStm(
+                      Some(
+                        Expr(
+                          [ Assign(
+                              ArraySubscript(
+                                PrimaryExpr(Id("arr"))
+                              , Expr([PrimaryExpr(Lit(IntLit("3")))])
+                              )
+                            , AssignOp()
+                            , PrimaryExpr(Lit(IntLit("0")))
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , FunDef(
+            DecSpecifierSeq([TypeSpecifier(Void())])
+          , Declarator(None(), DeclIds(Id("castFun"), None()))
+          , None()
+          , Block(
+              Some(
+                BlockItems(
+                  [ ExprStm(
+                      Some(
+                        Expr(
+                          [ Assign(
+                              CastExpr(Deref(), PrimaryExpr(Id("f1")))
+                            , AssignOp()
+                            , PrimaryExpr(Id("a0"))
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  , ExprStm(
+                      Some(
+                        Expr(
+                          [Assign(
+                             PrimaryExpr(Id("f2"))
+                           , AssignOp()
+                           , PrimaryExpr(Lit(IntLit("7")))
+                           )]
+                        )
+                      )
+                    )
+                  , ExprStm(
+                      Some(
+                        Expr(
+                          [ Assign(
+                              CastExpr(Deref(), PrimaryExpr(Id("p")))
+                            , AssignOp()
+                            , Cast(
+                                TypeName(SpecifierQualifierList([TypeSpecifier(Int())]), None())
+                              , PrimaryExpr(Id("f2"))
+                              )
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , FunDef(
+            DecSpecifierSeq([TypeSpecifier(Int())])
+          , Declarator(None(), DeclIds(Id("fun"), None()))
+          , None()
+          , Block(
+              Some(
+                BlockItems(
+                  [ ExprStm(
+                      Some(
+                        Expr(
+                          [ Assign(
+                              PrimaryExpr(Id("p"))
+                            , AssignOp()
+                            , CastExpr(Ref(), PrimaryExpr(Id("a0")))
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  , ExprStm(
+                      Some(
+                        Expr(
+                          [ Assign(
+                              CastExpr(Deref(), PrimaryExpr(Id("p")))
+                            , AssignOp()
+                            , PrimaryExpr(Lit(IntLit("3")))
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  , ExprStm(
+                      Some(
+                        Expr(
+                          [Assign(
+                             PrimaryExpr(Id("a0"))
+                           , AssignOpPlus()
+                           , PrimaryExpr(Lit(IntLit("5")))
+                           )]
+                        )
+                      )
+                    )
+                  , JumpStm(Return(Some(Expr([PrimaryExpr(Id("a0"))]))))
+                  ]
+                )
+              )
+            )
+          )
+        , FunDef(
+            DecSpecifierSeq([TypeSpecifier(Char())])
+          , Declarator(
+              Some(PointerSeq([Pointer(None())]))
+            , DeclParams(
+                Id("stringCopy")
+              , ParamList(
+                  [ ParamDec(
+                      DecSpecifierSeq([TypeSpecifier(Char())])
+                    , Declarator(Some(PointerSeq([Pointer(None())])), Id("str"))
+                    )
+                  ]
+                )
+              )
+            )
+          , None()
+          , Block(
+              Some(
+                BlockItems(
+                  [ Dec(
+                      DecSpecifierSeq([TypeSpecifier(Char())])
+                    , Some(
+                        InitDeclaratorList(
+                          [Declarator(Some(PointerSeq([Pointer(None())])), Id("res"))]
+                        )
+                      )
+                    )
+                  , IterationStm(
+                      While(
+                        Expr(
+                          [ NotEq(
+                              CastExpr(Deref(), PrimaryExpr(Id("str")))
+                            , PrimaryExpr(Lit(CharLit("'\\0'")))
+                            )
+                          ]
+                        )
+                      , Block(
+                          Some(
+                            BlockItems(
+                              [ ExprStm(
+                                  Some(
+                                    Expr(
+                                      [ Assign(
+                                          CastExpr(Deref(), PostIncr(PrimaryExpr(Id("res"))))
+                                        , AssignOp()
+                                        , CastExpr(Deref(), PostIncr(PrimaryExpr(Id("str"))))
+                                        )
+                                      ]
+                                    )
+                                  )
+                                )
+                              ]
+                            )
+                          )
+                        )
+                      )
+                    )
+                  , JumpStm(Return(Some(Expr([PrimaryExpr(Id("res"))]))))
+                  ]
+                )
+              )
+            )
+          )
+        , FunDef(
+            DecSpecifierSeq([TypeSpecifier(Void())])
+          , Declarator(None(), DeclIds(Id("fun2"), None()))
+          , None()
+          , Block(
+              Some(
+                BlockItems(
+                  [ IterationStm(
+                      ForDec(
+                        Dec(
+                          DecSpecifierSeq([TypeSpecifier(Int())])
+                        , Some(
+                            InitDeclaratorList(
+                              [InitDeclarator(
+                                 Declarator(None(), Id("i"))
+                               , PrimaryExpr(Lit(IntLit("0")))
+                               )]
+                            )
+                          )
+                        )
+                      , None()
+                      , Some(Expr([PreIncr(PrimaryExpr(Id("i")))]))
+                      , Block(
+                          Some(
+                            BlockItems(
+                              [ SelectionStm(
+                                  If(
+                                    Expr(
+                                      [GtEq(PrimaryExpr(Id("i")), PrimaryExpr(Lit(IntLit("9"))))]
+                                    )
+                                  , JumpStm(Return(None()))
+                                  , ExprStm(Some(Expr([PostIncr(PrimaryExpr(Id("i")))])))
+                                  )
+                                )
+                              ]
+                            )
+                          )
+                        )
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , FunDef(
+            DecSpecifierSeq([TypeSpecifier(Void())])
+          , Declarator(None(), DeclIds(Id("fun3"), None()))
+          , None()
+          , Block(
+              Some(
+                BlockItems(
+                  [ ExprStm(
+                      Some(
+                        Expr(
+                          [Assign(PrimaryExpr(Id("funptr")), AssignOp(), PrimaryExpr(Id("fun")))]
+                        )
+                      )
+                    )
+                  , ExprStm(
+                      Some(Expr([Call(PrimaryExpr(Id("funptr")), None())]))
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , FunDef(
+            DecSpecifierSeq([TypeSpecifier(Void())])
+          , Declarator(
+              None()
+            , DeclParams(
+                Id("swap")
+              , ParamList(
+                  [ ParamDec(
+                      DecSpecifierSeq([TypeSpecifier(Int())])
+                    , Declarator(Some(PointerSeq([Pointer(None())])), Id("a"))
+                    )
+                  , ParamDec(
+                      DecSpecifierSeq([TypeSpecifier(Int())])
+                    , Declarator(Some(PointerSeq([Pointer(None())])), Id("b"))
+                    )
+                  ]
+                )
+              )
+            )
+          , None()
+          , Block(
+              Some(
+                BlockItems(
+                  [ Dec(
+                      DecSpecifierSeq([TypeSpecifier(Int())])
+                    , Some(
+                        InitDeclaratorList(
+                          [ InitDeclarator(
+                              Declarator(None(), Id("temp"))
+                            , CastExpr(Deref(), PrimaryExpr(Id("a")))
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  , ExprStm(
+                      Some(
+                        Expr(
+                          [ Assign(
+                              CastExpr(Deref(), PrimaryExpr(Id("a")))
+                            , AssignOp()
+                            , CastExpr(Deref(), PrimaryExpr(Id("b")))
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  , ExprStm(
+                      Some(
+                        Expr(
+                          [ Assign(
+                              CastExpr(Deref(), PrimaryExpr(Id("b")))
+                            , AssignOp()
+                            , PrimaryExpr(Id("temp"))
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , FunDef(
+            DecSpecifierSeq([TypeSpecifier(Void())])
+          , Declarator(None(), DeclIds(Id("test"), None()))
+          , None()
+          , Block(
+              Some(
+                BlockItems(
+                  [ Dec(
+                      DecSpecifierSeq([StorageClassSpecifier(Typedef()), TypeSpecifier(Int())])
+                    , Some(InitDeclaratorList([Declarator(None(), Id("x"))]))
+                    )
+                  , Dec(
+                      DecSpecifierSeq([TypeSpecifier(TypedefName(Id("x")))])
+                    , Some(
+                        InitDeclaratorList(
+                          [Declarator(Some(PointerSeq([Pointer(None())])), Id("p"))]
+                        )
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , ExtDec(
+            Dec(
+              DecSpecifierSeq([StorageClassSpecifier(Typedef()), TypeSpecifier(Int())])
+            , Some(InitDeclaratorList([Declarator(None(), Id("a"))]))
+            )
+          )
+        , FunDef(
+            DecSpecifierSeq([TypeSpecifier(Void())])
+          , Declarator(None(), DeclIds(Id("ambTest0"), None()))
+          , None()
+          , Block(
+              Some(
+                BlockItems(
+                  [ Dec(
+                      DecSpecifierSeq([TypeSpecifier(TypedefName(Id("a")))])
+                    , Some(
+                        InitDeclaratorList(
+                          [Declarator(Some(PointerSeq([Pointer(None())])), Id("b"))]
+                        )
+                      )
+                    )
+                  , ExprStm(
+                      Some(
+                        Expr(
+                          [ Cast(
+                              TypeName(SpecifierQualifierList([TypeSpecifier(TypedefName(Id("a")))]), None())
+                            , CastExpr(Deref(), PrimaryExpr(Id("b")))
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  , ExprStm(
+                      Some(
+                        Expr(
+                          [ Cast(
+                              TypeName(SpecifierQualifierList([TypeSpecifier(TypedefName(Id("a")))]), None())
+                            , CastExpr(
+                                Plus()
+                              , Cast(
+                                  TypeName(SpecifierQualifierList([TypeSpecifier(TypedefName(Id("a")))]), None())
+                                , PrimaryExpr(ParenExpr(Expr([PrimaryExpr(Id("b"))])))
+                                )
+                              )
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  , ExprStm(
+                      Some(
+                        Expr(
+                          [ Cast(
+                              TypeName(SpecifierQualifierList([TypeSpecifier(TypedefName(Id("a")))]), None())
+                            , PrimaryExpr(ParenExpr(Expr([PrimaryExpr(Id("b"))])))
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , FunDef(
+            DecSpecifierSeq([TypeSpecifier(Void())])
+          , Declarator(
+              None()
+            , DeclParams(
+                Id("ambTest1")
+              , ParamList(
+                  [ ParamDec(
+                      DecSpecifierSeq([TypeSpecifier(Int())])
+                    , Declarator(None(), Id("a"))
+                    )
+                  , ParamDec(
+                      DecSpecifierSeq([TypeSpecifier(Int())])
+                    , Declarator(None(), Id("b"))
+                    )
+                  ]
+                )
+              )
+            )
+          , None()
+          , Block(
+              Some(
+                BlockItems(
+                  [ ExprStm(
+                      Some(
+                        Expr(
+                          [Mul(PrimaryExpr(Id("a")), PrimaryExpr(Id("b")))]
+                        )
+                      )
+                    )
+                  , ExprStm(
+                      Some(
+                        Expr(
+                          [ Mul(
+                              PrimaryExpr(ParenExpr(Expr([PrimaryExpr(Id("a"))])))
+                            , PrimaryExpr(Id("b"))
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  , ExprStm(
+                      Some(
+                        Expr(
+                          [ Plus(
+                              PrimaryExpr(ParenExpr(Expr([PrimaryExpr(Id("a"))])))
+                            , Call(
+                                PrimaryExpr(ParenExpr(Expr([PrimaryExpr(Id("a"))])))
+                              , Some(Expr([PrimaryExpr(Id("b"))]))
+                              )
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  , ExprStm(
+                      Some(
+                        Expr(
+                          [ Call(
+                              PrimaryExpr(ParenExpr(Expr([PrimaryExpr(Id("a"))])))
+                            , Some(Expr([PrimaryExpr(Id("b"))]))
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , FunDef(
+            DecSpecifierSeq([TypeSpecifier(Void())])
+          , Declarator(
+              None()
+            , DeclParams(
+                Id("callSwap")
+              , ParamList(
+                  [ ParamDec(
+                      DecSpecifierSeq([TypeSpecifier(Int())])
+                    , Declarator(Some(PointerSeq([Pointer(None())])), Id("a"))
+                    )
+                  , ParamDec(
+                      DecSpecifierSeq([TypeSpecifier(Int())])
+                    , Declarator(Some(PointerSeq([Pointer(None())])), Id("b"))
+                    )
+                  ]
+                )
+              )
+            )
+          , None()
+          , Block(
+              Some(
+                BlockItems(
+                  [ ExprStm(
+                      Some(
+                        Expr(
+                          [ Call(
+                              PrimaryExpr(Id("swap"))
+                            , Some(
+                                Expr(
+                                  [ CastExpr(Ref(), PrimaryExpr(Id("a")))
+                                  , CastExpr(Ref(), PrimaryExpr(Id("b")))
+                                  ]
+                                )
+                              )
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+          )
+        , FunDef(
+            DecSpecifierSeq([TypeSpecifier(Void())])
+          , Declarator(None(), DeclIds(Id("count"), None()))
+          , None()
+          , Block(
+              Some(
+                BlockItems(
+                  [ Dec(
+                      DecSpecifierSeq([StorageClassSpecifier(Static()), TypeSpecifier(Int())])
+                    , Some(
+                        InitDeclaratorList(
+                          [InitDeclarator(
+                             Declarator(None(), Id("i"))
+                           , PrimaryExpr(Lit(IntLit("0")))
+                           )]
+                        )
+                      )
+                    )
+                  , ExprStm(Some(Expr([PostIncr(PrimaryExpr(Id("i")))])))
+                  ]
+                )
+              )
+            )
+          )
+        , FunDef(
+            DecSpecifierSeq([TypeSpecifier(Int())])
+          , Declarator(None(), DeclIds(Id("main"), None()))
+          , None()
+          , Block(
+              Some(
+                BlockItems(
+                  [JumpStm(
+                     Return(Some(Expr([PrimaryExpr(Lit(IntLit("0")))])))
+                   )]
+                )
+              )
+            )
+          )
+        ]
+      )
+    )
+  )
+, "test/example.c"
+, "/Users/carinaoberle/Documents/Uni/Bachelorarbeit/eclipse/Eclipse.app/Contents/MacOS/SpoofaxC_workspace/C"
+)

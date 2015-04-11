@@ -1,0 +1,47 @@
+module C-Folding.generated
+
+folding Default folding definitions
+  
+  // Folding rules indicate which syntactic constructs can be folded,
+  // and take one of the following forms:
+  //
+  //   <sort>.<constructor>
+  //
+  //   <sort>._
+  //
+  //   _.<constructor>
+  //
+  // To indicate that an element should always be folded, add
+  // a (folded) annotation:
+  //
+  //   _.Imports (folded)
+  //
+  // To disable a folding rule defined elsewhere, add a (disabled) annotation:
+  //
+  //   Definition._ (disabled)
+  
+  TranslationUnit.TranslationUnit
+  OptExternalDeclarationSeq2
+  ExternalDeclarationSeq.ExtDecSeq
+  FunctionDefinition.FunDef
+  OptPointerSeq2
+  PointerSeq.PointerSeq
+  Pointer.Pointer
+  OptTypeQualifierList2
+  TypeQualifierList.TypeQualifierList
+  PrimaryExpr.StringLitSeq
+  PointerSeq
+  DirectDeclarator.DeclTypeQualifiers
+  DirectDeclarator.DeclIds
+  OptIdentifierList2
+  IdentifierList.IdentifierList
+  OptDeclarationList2
+  DeclarationList.DecSeq
+  Declaration.Dec
+  OptInitDeclaratorList2
+  InitDeclaratorList.InitDeclaratorList
+  InitDeclarator.InitDeclarator
+  ExprStm
+  ExprStm.ExprStm
+  Stm.JumpStm
+  JumpStm.Return

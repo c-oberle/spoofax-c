@@ -1,0 +1,67 @@
+module disamb
+
+imports
+	
+	libstratego-lib
+	libstratego-aterm
+	libstratego-sglr
+
+	include/C
+
+strategies
+	
+	disamb = 
+		rules(td-names := [])
+	  	; traverse(try(disamb-typedef))
+	
+	traverse(s) =
+		s; all(enter-scope(s) <+ traverse(s))
+	
+	disamb-typedef =
+		resolve-amb ; try(collect-name)
+	 <+ collect-name
+	 
+	collect-name =
+	 	collect-td-name 
+	 <+ collect-id		
+		
+	enter-scope(s) =
+		(?FunDef(_, _, _, _) <+ ?Block(_) <+ ?ForDec(_, _, _, _))  
+		; {| td-names : traverse(s) |} 			 	
+		
+	collect-td-name = 
+		?Dec(DecSpecifierSeq([StorageClassSpecifier(Typedef()), _]), Some(inits))
+		; update-td-names(union | <collect-decl-ids> inits)
+		 		
+	collect-id =
+		?Dec(_, Some(inits)) 		
+			; update-td-names(diff | <collect-decl-ids> inits)
+	 <+ ?ParamDec(_, decl) 	
+	 		; update-td-names(diff | [<extract-decl-id> decl])  
+			  
+	update-td-names(s | ids) =
+		rules(td-names := <s> (<td-names>, ids)) 
+		  
+	collect-decl-ids =
+		?InitDeclaratorList(decls)
+		; <foldl(\(decl, ids) -> 
+		  	<union> (ids, [<extract-decl-id> decl]) \)> (decls, [])  	
+		  	
+	extract-decl-id =
+		(?Declarator(_, dd) <+ ?InitDeclarator(Declarator(_, dd), _))
+		; <collect-one(?Id(_))> dd
+		
+	contains-invalid-name =
+		collect-all(?TypedefName(n); not(<elem> (n, <td-names>))); not(?[])
+	 <+ collect-all(not(?TypedefName(_)); one(<elem> (<id>, <td-names>))); not(?[])	
+		  	
+
+rules	  
+	
+	resolve-amb :
+		a@amb([x, y])		->	res
+		
+		with
+			amb([x', y']) := <rec x(all(resolve-amb <+ x))> a;
+			res := <if(<contains-invalid-name> x', !y', !x')> 
+							     								

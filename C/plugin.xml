@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.imp.runtime.languageDescription">
+      <language
+            extensions="c"
+            description="C"
+            language="C"
+            derivedFrom="DynamicRoot"
+            validator="C.CValidator"
+            validatorClass="C.CValidator"
+      ></language>
+   </extension>
+   <extension
+         id="C.parser"
+         name="C Parser"
+         point="org.eclipse.imp.runtime.parser">
+      <parser
+            class="C.CParseController"
+            language="C">
+      </parser>
+   </extension>    
+</plugin>

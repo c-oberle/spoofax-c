@@ -1,0 +1,1140 @@
+definition
+
+module AdditiveExpressions
+imports MultiplicativeExpressions
+
+exports
+  sorts WATER WATERTOKEN WATERTOKENSTART WATERTOKENSEPARATOR WATERTOKENSTAR
+
+  lexical syntax
+    [A-Za-z0-9\_]                        -> WATERTOKENSTART                 {recover, avoid}
+    WATERTOKENSTART [A-Za-z0-9\_]*       -> WATERTOKEN                      
+    ~[A-Za-z0-9\_\ \t\12\r\n\*]          -> WATERTOKENSEPARATOR             {recover, avoid}
+    "*"                                  -> WATERTOKENSTAR                  {recover, avoid}
+    WATERTOKEN                           -> WATER                           
+    WATERTOKENSEPARATOR                  -> WATER                           
+    WATERTOKENSTAR                       -> WATER                           
+                                         -> WATEREOF                        
+    "completion123"                      -> COMPLETIONPREFIX                {completion}
+    "|#WATERTOKENSTAR|"                  -> WATERTOKENSTAR                  {completion}
+    "|#AdditiveExpr|"                    -> AdditiveExpr                    {completion}
+    "|#AndExpr|"                         -> AndExpr                         {completion}
+    "|#AssignmentOperator|"              -> AssignmentOperator              {completion}
+    "|#CastExpr|"                        -> CastExpr                        {completion}
+    "|#CHARACTER-LITERAL|"               -> CHARACTER-LITERAL               {completion}
+    "|#CompoundStm|"                     -> CompoundStm                     {completion}
+    "|#CondExpr|"                        -> CondExpr                        {completion}
+    "|#Declaration|"                     -> Declaration                     {completion}
+    "|#DirectDeclarator|"                -> DirectDeclarator                {completion}
+    "|#Pointer|"                         -> Pointer                         {completion}
+    "|#IdentifierList|"                  -> IdentifierList                  {completion}
+    "|#Designation|"                     -> Designation                     {completion}
+    "|#Designator|"                      -> Designator                      {completion}
+    "|#EnumSpecifier|"                   -> EnumSpecifier                   {completion}
+    "|#EnumeratorDefinition|"            -> EnumeratorDefinition            {completion}
+    "|#EqualityExpr|"                    -> EqualityExpr                    {completion}
+    "|#SIMPLE-ESCAPE-SEQUENCE|"          -> SIMPLE-ESCAPE-SEQUENCE          {completion}
+    "|#OCTAL-ESCAPE-SEQUENCE1|"          -> OCTAL-ESCAPE-SEQUENCE1          {completion}
+    "|#OCTAL-ESCAPE-SEQUENCE2|"          -> OCTAL-ESCAPE-SEQUENCE2          {completion}
+    "|#OCTAL-ESCAPE-SEQUENCE3|"          -> OCTAL-ESCAPE-SEQUENCE3          {completion}
+    "|#OCTAL-ESCAPE-SEQUENCE4|"          -> OCTAL-ESCAPE-SEQUENCE4          {completion}
+    "|#HEXADECIMAL-ESCAPE-SEQUENCE|"     -> HEXADECIMAL-ESCAPE-SEQUENCE     {completion}
+    "|#UNIVERSAL-CHARACTER-NAME|"        -> UNIVERSAL-CHARACTER-NAME        {completion}
+    "|#ExclusiveOrExpr|"                 -> ExclusiveOrExpr                 {completion}
+    "|#ExprStm|"                         -> ExprStm                         {completion}
+    "|#HEXADECIMAL-FLOATING-CONSTANT|"   -> HEXADECIMAL-FLOATING-CONSTANT   {completion}
+    "|#FRACTIONAL-CONSTANT|"             -> FRACTIONAL-CONSTANT             {completion}
+    "|#HEXADECIMAL-FRACTIONAL-CONSTANT|" -> HEXADECIMAL-FRACTIONAL-CONSTANT {completion}
+    "|#BINARY-EXPONENT-PART|"            -> BINARY-EXPONENT-PART            {completion}
+    "|#FunctionSpecifier|"               -> FunctionSpecifier               {completion}
+    "|#OrExpr|"                          -> OrExpr                          {completion}
+    "|#InitDeclarator|"                  -> InitDeclarator                  {completion}
+    "|#Initializer|"                     -> Initializer                     {completion}
+    "|#InitializerList|"                 -> InitializerList                 {completion}
+    "|#OCTAL-LITERAL|"                   -> OCTAL-LITERAL                   {completion}
+    "|#HEXADECIMAL-LITERAL|"             -> HEXADECIMAL-LITERAL             {completion}
+    "|#IterationStm|"                    -> IterationStm                    {completion}
+    "|#JumpStm|"                         -> JumpStm                         {completion}
+    "|#Identifier|"                      -> Identifier                      {completion}
+    "|#LabeledStm|"                      -> LabeledStm                      {completion}
+    "|#LogicalAndExpr|"                  -> LogicalAndExpr                  {completion}
+    "|#LogicalOrExpr|"                   -> LogicalOrExpr                   {completion}
+    "|#MultiplicativeExpr|"              -> MultiplicativeExpr              {completion}
+    "|#ParameterTypeList|"               -> ParameterTypeList               {completion}
+    "|#PostfixExpr|"                     -> PostfixExpr                     {completion}
+    "|#PrimaryExpr|"                     -> PrimaryExpr                     {completion}
+    "|#RelationalExpr|"                  -> RelationalExpr                  {completion}
+    "|#SelectionStm|"                    -> SelectionStm                    {completion}
+    "|#ShiftExpr|"                       -> ShiftExpr                       {completion}
+    "|#StorageClassSpecifier|"           -> StorageClassSpecifier           {completion}
+    "|#STRING-LITERAL|"                  -> STRING-LITERAL                  {completion}
+    "|#StructOrUnionSpecifier|"          -> StructOrUnionSpecifier          {completion}
+    "|#StructOrUnion|"                   -> StructOrUnion                   {completion}
+    "|#StructDeclaration|"               -> StructDeclaration               {completion}
+    "|#StructDeclarator|"                -> StructDeclarator                {completion}
+    "|#DirectAbstractDeclarator|"        -> DirectAbstractDeclarator        {completion}
+    "|#TypeQualifier|"                   -> TypeQualifier                   {completion}
+    "|#TypeSpecifier|"                   -> TypeSpecifier                   {completion}
+    "|#UnaryExpr|"                       -> UnaryExpr                       {completion}
+    "|#UnaryOperator|"                   -> UnaryOperator                   {completion}
+    "|#Include|"                         -> Include                         {completion}
+
+  lexical restrictions
+    WATERTOKEN -/- [A-Za-z0-9\_]
+    WATERTOKENSTAR -/- [\/]
+
+  context-free syntax
+    WATER -> LAYOUT {cons("WATER")}
+
+  (
+
+  sorts WATEREOF
+
+  lexical restrictions
+    WATEREOF -/- ~[]
+
+  lexical syntax
+    %% Lexical insertion recovery rules                             
+    "'"                                        -> INSERTOPENQUOTE   {recover}
+    INSERTOPENQUOTE C-CHAR-SEQUENCE "\n"       -> CHARACTER-LITERAL {cons("INSERTEND")}
+    INSERTOPENQUOTE C-CHAR-SEQUENCE WATEREOF   -> CHARACTER-LITERAL {cons("INSERTEND")}
+                                               -> "]"               {recover, cons("INSERTION")}
+                                               -> ";"               {recover, cons("INSERTION")}
+    "/*"                                       -> INSERTSTART       {recover}
+    INSERTSTART ( ~[\*] | ASTERISK )* WATEREOF -> LAYOUT            {cons("INSERTEND")}
+                                               -> "}"               {recover, cons("INSERTION")}
+    "\""                                       -> INSERTOPENQUOTE   {recover}
+    INSERTOPENQUOTE S-CHAR-SEQUENCE? "\n"      -> STRING-LITERAL    {cons("INSERTEND")}
+    INSERTOPENQUOTE S-CHAR-SEQUENCE? WATEREOF  -> STRING-LITERAL    {cons("INSERTEND")}
+                                               -> ","               {recover, cons("INSERTION")}
+                                               -> ")"               {recover, cons("INSERTION")}
+                                               -> ">"               {recover, cons("INSERTION")}
+                                               -> "\""              {recover, cons("INSERTION")}
+                                               -> "#"               {recover, cons("INSERTION")}
+
+  syntax
+    %% Kernel syntax insertion recovery rules   
+
+  )
+
+  (
+
+  sorts AdditiveExpr
+
+  context-free syntax
+    MultiplicativeExpr                  -> AdditiveExpr 
+    AdditiveExpr "+" MultiplicativeExpr -> AdditiveExpr {cons("Plus")}
+    AdditiveExpr "-" MultiplicativeExpr -> AdditiveExpr {cons("Minus")}
+
+  )
+
+module AndExpressions
+imports EqualityExpressions
+
+exports
+  sorts AndExpr
+
+  context-free syntax
+    EqualityExpr             -> AndExpr 
+    AndExpr "&" EqualityExpr -> AndExpr {cons("And")}
+
+  context-free restrictions
+    "&" -/- [\&]
+
+module AssignmentExpressions
+imports CondExpressions
+
+exports
+  sorts AssignmentOperator
+
+exports
+  sorts AssignmentExpr
+
+  context-free syntax
+    CondExpr                                    -> AssignmentExpr     
+    UnaryExpr AssignmentOperator AssignmentExpr -> AssignmentExpr     {cons("Assign")}
+    "="                                         -> AssignmentOperator {cons("AssignOp")}
+    "*="                                        -> AssignmentOperator {cons("AssignOpMul")}
+    "/="                                        -> AssignmentOperator {cons("AssignOpDiv")}
+    "%="                                        -> AssignmentOperator {cons("AssignOpMod")}
+    "+="                                        -> AssignmentOperator {cons("AssignOpPlus")}
+    "-="                                        -> AssignmentOperator {cons("AssignOpMinus")}
+    ">>="                                       -> AssignmentOperator {cons("AssignOpShiftR")}
+    "<<="                                       -> AssignmentOperator {cons("AssignOpShiftL")}
+    "&="                                        -> AssignmentOperator {cons("AssignOpAnd")}
+    "^="                                        -> AssignmentOperator {cons("AssignOpXor")}
+    "|="                                        -> AssignmentOperator {cons("AssignOpOr")}
+
+module MainC
+imports TranslationUnits
+
+exports
+  context-free start-symbols
+    TranslationUnit ExternalDeclarationSeq
+
+module CastExpressions
+imports UnaryExpressions
+
+exports
+  sorts CastExpr
+
+  context-free syntax
+    UnaryExpr                 -> CastExpr 
+    "(" TypeName ")" CastExpr -> CastExpr {cons("Cast")}
+
+module CharLiterals
+imports Characters EscapeSequences
+
+exports
+  sorts CHARACTER-LITERAL C-CHAR-SEQUENCE C-CHAR
+
+exports
+  sorts CharLiteral
+
+  lexical syntax
+    "'" C-CHAR-SEQUENCE "'"  -> CHARACTER-LITERAL 
+    "L'" C-CHAR-SEQUENCE "'" -> CHARACTER-LITERAL 
+    C-CHAR+                  -> C-CHAR-SEQUENCE   
+    C-SOURCE-CHARACTER       -> C-CHAR            
+    ESCAPE-SEQUENCE          -> C-CHAR            
+    UNIVERSAL-CHARACTER-NAME -> C-CHAR            
+
+  context-free syntax
+    CHARACTER-LITERAL -> CharLiteral 
+
+module Characters
+imports Layout
+
+exports
+  sorts DIGIT NON-DIGIT NONZERO-DIGIT SOURCE-CHARACTER S-SOURCE-CHARACTER
+        C-SOURCE-CHARACTER OCTAL-DIGIT LOW-OCTAL-DIGIT HIGH-OCTAL-DIGIT
+        HEXADECIMAL-DIGIT
+
+  lexical syntax
+    [a-zA-Z0-9\_\{\}\[\]\#\(\)\<\>\%\:\;\.\?\*\+\-\/\^\&\|\~\!\=\,\"\'\ \n\t\\] -> SOURCE-CHARACTER   
+    [\0-\9]                                                                     -> S-SOURCE-CHARACTER 
+    [\11-\12]                                                                   -> S-SOURCE-CHARACTER 
+    [\14-\33]                                                                   -> S-SOURCE-CHARACTER 
+    [\35-\91]                                                                   -> S-SOURCE-CHARACTER 
+    [\93-\127]                                                                  -> S-SOURCE-CHARACTER 
+    [\192-\223] [\128-\191]                                                     -> S-SOURCE-CHARACTER 
+    [\224-\239] [\128-\191] [\128-\191]                                         -> S-SOURCE-CHARACTER 
+    [\240-\255] [\128-\191] [\128-\191] [\128-\191]                             -> S-SOURCE-CHARACTER 
+    [\0-\9]                                                                     -> C-SOURCE-CHARACTER 
+    [\11-\12]                                                                   -> C-SOURCE-CHARACTER 
+    [\14-\38]                                                                   -> C-SOURCE-CHARACTER 
+    [\40-\91]                                                                   -> C-SOURCE-CHARACTER 
+    [\93-\127]                                                                  -> C-SOURCE-CHARACTER 
+    [\192-\223] [\128-\191]                                                     -> C-SOURCE-CHARACTER 
+    [\224-\239] [\128-\191] [\128-\191]                                         -> C-SOURCE-CHARACTER 
+    [\240-\255] [\128-\191] [\128-\191] [\128-\191]                             -> C-SOURCE-CHARACTER 
+    [0-9]                                                                       -> DIGIT              
+    [a-zA-Z\_]                                                                  -> NON-DIGIT          
+    [1-9]                                                                       -> NONZERO-DIGIT      
+    [0-7]                                                                       -> OCTAL-DIGIT        
+    [0-3]                                                                       -> LOW-OCTAL-DIGIT    
+    [4-7]                                                                       -> HIGH-OCTAL-DIGIT   
+    [0-9a-fA-F]                                                                 -> HEXADECIMAL-DIGIT  
+
+module CompoundStatements
+imports Statements
+
+exports
+  sorts BlockItemList BlockItem
+
+exports
+  sorts CompoundStm
+
+  context-free syntax
+    "{" bli:BlockItemList? "}" -> CompoundStm   {cons("Block")}
+    BlockItem+                 -> BlockItemList {cons("BlockItems")}
+    Stm                        -> BlockItem     
+    Declaration                -> BlockItem     
+
+module CondExpressions
+imports AssignmentExpressions Expressions LogicalOrExpressions
+
+exports
+  sorts CondExpr
+
+  context-free syntax
+    LogicalOrExpr                       -> CondExpr 
+    LogicalOrExpr "?" Expr ":" CondExpr -> CondExpr {cons("Cond")}
+
+module ConstantExpressions
+imports CondExpressions
+
+exports
+  sorts ConstantExpr
+
+  context-free syntax
+    CondExpr -> ConstantExpr {cons("ConstExpr")}
+
+module Declarations
+imports InitDeclarators FunctionDefinitions Specifiers
+
+exports
+  sorts Declaration
+
+  context-free syntax
+    DeclarationSpecifierSeq initd:InitDeclaratorList? ";" -> Declaration {cons("Dec")}
+
+module Declarators
+imports ConstantExpressions TypeQualifiers ParameterDeclarations
+
+exports
+  sorts DirectDeclarator Pointer
+
+exports
+  sorts Declarator PointerSeq IdentifierList
+
+  context-free syntax
+    p:PointerSeq? DirectDeclarator                                          -> Declarator       {cons("Declarator")}
+    Identifier                                                              -> DirectDeclarator 
+    "(" Declarator ")"                                                      -> DirectDeclarator {cons("DeclPar")}
+    DirectDeclarator "[" tql:TypeQualifierList? as:AssignmentExpr? "]"      -> DirectDeclarator {cons("DeclQualifierAssign")}
+    DirectDeclarator "[" "static" tql:TypeQualifierList? AssignmentExpr "]" -> DirectDeclarator {cons("DeclStaticAssign")}
+    DirectDeclarator "[" TypeQualifierList "static" AssignmentExpr "]"      -> DirectDeclarator {cons("DeclQualifierStaticAssign")}
+    DirectDeclarator "[" tql:TypeQualifierList? "*" "]"                     -> DirectDeclarator {cons("DeclTypeQualifiers")}
+    DirectDeclarator "(" ParameterTypeList ")"                              -> DirectDeclarator {cons("DeclParams")}
+    DirectDeclarator "(" il:IdentifierList? ")"                             -> DirectDeclarator {cons("DeclIds")}
+    Pointer+                                                                -> PointerSeq       {cons("PointerSeq")}
+    "*" tql:TypeQualifierList?                                              -> Pointer          {cons("Pointer")}
+    {Identifier ","}+                                                       -> IdentifierList   {cons("IdentifierList")}
+
+module Designations
+imports ConstantExpressions Identifiers
+
+exports
+  sorts DesignatorList Designator
+
+exports
+  sorts Designation
+
+  context-free syntax
+    DesignatorList "="   -> Designation    {cons("Designation")}
+    Designator+          -> DesignatorList {cons("DesignatorList")}
+    "[" ConstantExpr "]" -> Designator     {cons("BracketDesignator")}
+    "." Identifier       -> Designator     {cons("DotDesignator")}
+
+module EnumSpecifiers
+imports Identifiers ConstantExpressions
+
+exports
+  sorts EnumeratorList EnumeratorDefinition
+
+exports
+  sorts EnumSpecifier EnumerationConstant
+
+  context-free syntax
+    "enum" ident:Identifier? "{" EnumeratorList "}"     -> EnumSpecifier        {cons("EnumSpecifier")}
+    "enum" ident:Identifier? "{" EnumeratorList "," "}" -> EnumSpecifier        {cons("EnumSpecifierTrComma")}
+    "enum" Identifier                                   -> EnumSpecifier        {cons("EnumIdentifier")}
+    enud:{EnumeratorDefinition ","}+                    -> EnumeratorList       {cons("EnumeratorList")}
+    EnumerationConstant                                 -> EnumeratorDefinition {cons("EnumeratorConst")}
+    EnumerationConstant "=" ConstantExpr                -> EnumeratorDefinition {cons("EnumeratorDef")}
+    Identifier                                          -> EnumerationConstant  
+
+module EqualityExpressions
+imports RelationalExpressions
+
+exports
+  sorts EqualityExpr
+
+  context-free syntax
+    RelationalExpr                   -> EqualityExpr 
+    EqualityExpr "==" RelationalExpr -> EqualityExpr {cons("Eq")}
+    EqualityExpr "!=" RelationalExpr -> EqualityExpr {cons("NotEq")}
+
+module EscapeSequences
+imports Characters
+
+exports
+  sorts SIMPLE-ESCAPE-SEQUENCE OCTAL-ESCAPE-SEQUENCE OCTAL-ESCAPE-SEQUENCE1
+        OCTAL-ESCAPE-SEQUENCE2 OCTAL-ESCAPE-SEQUENCE3 OCTAL-ESCAPE-SEQUENCE4
+        HEXADECIMAL-ESCAPE-SEQUENCE HEX-QUAD
+
+exports
+  sorts ESCAPE-SEQUENCE UNIVERSAL-CHARACTER-NAME
+
+  lexical syntax
+    SIMPLE-ESCAPE-SEQUENCE                       -> ESCAPE-SEQUENCE        
+    OCTAL-ESCAPE-SEQUENCE                        -> ESCAPE-SEQUENCE        
+    HEXADECIMAL-ESCAPE-SEQUENCE                  -> ESCAPE-SEQUENCE        
+    UNIVERSAL-CHARACTER-NAME                     -> ESCAPE-SEQUENCE        
+    "\\'"                                        -> SIMPLE-ESCAPE-SEQUENCE 
+    "\\\""                                       -> SIMPLE-ESCAPE-SEQUENCE 
+    "\\?"                                        -> SIMPLE-ESCAPE-SEQUENCE 
+    "\\\\"                                       -> SIMPLE-ESCAPE-SEQUENCE 
+    "\\a"                                        -> SIMPLE-ESCAPE-SEQUENCE 
+    "\\b"                                        -> SIMPLE-ESCAPE-SEQUENCE 
+    "\\f"                                        -> SIMPLE-ESCAPE-SEQUENCE 
+    "\\n"                                        -> SIMPLE-ESCAPE-SEQUENCE 
+    "\\r"                                        -> SIMPLE-ESCAPE-SEQUENCE 
+    "\\t"                                        -> SIMPLE-ESCAPE-SEQUENCE 
+    "\\v"                                        -> SIMPLE-ESCAPE-SEQUENCE 
+    "\\" OCTAL-DIGIT                             -> OCTAL-ESCAPE-SEQUENCE1 
+    "\\" LOW-OCTAL-DIGIT OCTAL-DIGIT             -> OCTAL-ESCAPE-SEQUENCE2 
+    "\\" HIGH-OCTAL-DIGIT OCTAL-DIGIT            -> OCTAL-ESCAPE-SEQUENCE3 
+    "\\" LOW-OCTAL-DIGIT OCTAL-DIGIT OCTAL-DIGIT -> OCTAL-ESCAPE-SEQUENCE4 
+    OCTAL-ESCAPE-SEQUENCE1                       -> OCTAL-ESCAPE-SEQUENCE  
+    OCTAL-ESCAPE-SEQUENCE2                       -> OCTAL-ESCAPE-SEQUENCE  
+    OCTAL-ESCAPE-SEQUENCE3                       -> OCTAL-ESCAPE-SEQUENCE  
+    OCTAL-ESCAPE-SEQUENCE4                       -> OCTAL-ESCAPE-SEQUENCE  
+
+  lexical restrictions
+    OCTAL-ESCAPE-SEQUENCE1 -/- [0-7]
+    OCTAL-ESCAPE-SEQUENCE2 -/- [0-7]
+
+  lexical syntax
+    "\\x" HEXADECIMAL-DIGIT+ -> HEXADECIMAL-ESCAPE-SEQUENCE 
+
+  lexical restrictions
+    HEXADECIMAL-ESCAPE-SEQUENCE -/- [0-9a-fA-F]
+
+  lexical syntax
+    HEXADECIMAL-DIGIT HEXADECIMAL-DIGIT HEXADECIMAL-DIGIT HEXADECIMAL-DIGIT -> HEX-QUAD                 
+    "\\u" HEX-QUAD                                                          -> UNIVERSAL-CHARACTER-NAME 
+    "\\U" HEX-QUAD HEX-QUAD                                                 -> UNIVERSAL-CHARACTER-NAME 
+
+module ExclusiveOrExpressions
+imports AndExpressions
+
+exports
+  sorts ExclusiveOrExpr
+
+  context-free syntax
+    AndExpr                     -> ExclusiveOrExpr 
+    ExclusiveOrExpr "^" AndExpr -> ExclusiveOrExpr {cons("ExcOr")}
+
+module Expressions
+imports AssignmentExpressions
+
+exports
+  sorts Expr
+
+  context-free syntax
+    ass:{AssignmentExpr ","}+ -> Expr {cons("Expr")}
+
+module ExpressionStatements
+imports Expressions
+
+exports
+  sorts ExprStm
+
+  context-free syntax
+    expr:Expr? ";" -> ExprStm {cons("ExprStm")}
+
+module FloatLiterals
+imports Characters
+
+exports
+  sorts FRACTIONAL-CONSTANT EXPONENT-PART SIGN FLOATING-SUFFIX
+        DECIMAL-FLOATING-CONSTANT HEXADECIMAL-FLOATING-CONSTANT
+        HEXADECIMAL-FRACTIONAL-CONSTANT BINARY-EXPONENT-PART
+
+exports
+  sorts FloatLiteral
+
+  lexical syntax
+    FRACTIONAL-CONSTANT EXPONENT-PART? FLOATING-SUFFIX?                        -> DECIMAL-FLOATING-CONSTANT       
+    DIGIT+ EXPONENT-PART FLOATING-SUFFIX?                                      -> DECIMAL-FLOATING-CONSTANT       
+    "0x" HEXADECIMAL-FRACTIONAL-CONSTANT BINARY-EXPONENT-PART FLOATING-SUFFIX? -> HEXADECIMAL-FLOATING-CONSTANT   
+    "0x" HEXADECIMAL-DIGIT+ BINARY-EXPONENT-PART FLOATING-SUFFIX?              -> HEXADECIMAL-FLOATING-CONSTANT   
+    "0X" HEXADECIMAL-FRACTIONAL-CONSTANT BINARY-EXPONENT-PART FLOATING-SUFFIX? -> HEXADECIMAL-FLOATING-CONSTANT   
+    "0X" HEXADECIMAL-DIGIT+ BINARY-EXPONENT-PART FLOATING-SUFFIX?              -> HEXADECIMAL-FLOATING-CONSTANT   
+    DIGIT* "." DIGIT+                                                          -> FRACTIONAL-CONSTANT             
+    DIGIT+ "."                                                                 -> FRACTIONAL-CONSTANT             
+    [eE] SIGN? DIGIT+                                                          -> EXPONENT-PART                   
+    [\+\-]                                                                     -> SIGN                            
+    HEXADECIMAL-DIGIT* "." HEXADECIMAL-DIGIT+                                  -> HEXADECIMAL-FRACTIONAL-CONSTANT 
+    HEXADECIMAL-DIGIT+ "."                                                     -> HEXADECIMAL-FRACTIONAL-CONSTANT 
+    "p" SIGN? DIGIT+                                                           -> BINARY-EXPONENT-PART            
+    "P" SIGN? DIGIT+                                                           -> BINARY-EXPONENT-PART            
+    [flFL]                                                                     -> FLOATING-SUFFIX                 
+
+  context-free syntax
+    DECIMAL-FLOATING-CONSTANT     -> FloatLiteral 
+    HEXADECIMAL-FLOATING-CONSTANT -> FloatLiteral 
+
+module FunctionDefinitions
+imports CompoundStatements Declarators Specifiers
+
+exports
+  sorts DeclarationList
+
+exports
+  sorts FunctionDefinition
+
+  context-free syntax
+    DeclarationSpecifierSeq Declarator dl:DeclarationList? CompoundStm -> FunctionDefinition {cons("FunDef")}
+    Declaration+                                                       -> DeclarationList    {cons("DecSeq")}
+
+module FunctionSpecifiers
+exports
+  sorts FunctionSpecifier
+
+  context-free syntax
+    "inline" -> FunctionSpecifier {cons("Inline")}
+
+module Identifiers
+imports Characters Keywords Layout
+
+exports
+  sorts ID
+
+exports
+  sorts Identifier
+
+  lexical syntax
+    NON-DIGIT ( NON-DIGIT | DIGIT )* -> ID 
+
+  lexical restrictions
+    ID -/- [a-zA-Z0-9\_]
+
+  context-free syntax
+    ID -> Identifier {cons("Id")}
+
+module OrExpressions
+imports ExclusiveOrExpressions
+
+exports
+  sorts OrExpr
+
+  context-free syntax
+    ExclusiveOrExpr            -> OrExpr 
+    OrExpr "|" ExclusiveOrExpr -> OrExpr {cons("Or")}
+
+module InitDeclarators
+imports Declarators
+
+exports
+  sorts InitDeclarator InitDeclaratorList
+
+  context-free syntax
+    initd:{InitDeclarator ","}+ -> InitDeclaratorList {cons("InitDeclaratorList")}
+    Declarator                  -> InitDeclarator     
+    Declarator "=" Initializer  -> InitDeclarator     {cons("InitDeclarator")}
+
+module Initializers
+imports AssignmentExpressions Designations
+
+exports
+  sorts InitializerSeq
+
+exports
+  sorts Initializer InitializerList
+
+  context-free syntax
+    AssignmentExpr              -> Initializer     
+    "{" InitializerList "}"     -> Initializer     {cons("Initializer")}
+    "{" InitializerList "," "}" -> Initializer     {cons("InitializerTrComma")}
+    Designation? Initializer    -> InitializerSeq  {cons("InitializerSeq")}
+    {InitializerSeq ","}+       -> InitializerList {cons("InitializerList")}
+
+module IntLiterals
+imports Characters
+
+exports
+  sorts INTEGER-LITERAL DECIMAL-LITERAL OCTAL-LITERAL HEXADECIMAL-LITERAL
+        INTEGER-SUFFIX UNSIGNED-SUFFIX LONG-SUFFIX LONG-LONG-SUFFIX
+
+exports
+  sorts IntLiteral
+
+  lexical syntax
+    DECIMAL-LITERAL INTEGER-SUFFIX?     -> INTEGER-LITERAL     
+    OCTAL-LITERAL INTEGER-SUFFIX?       -> INTEGER-LITERAL     
+    HEXADECIMAL-LITERAL INTEGER-SUFFIX? -> INTEGER-LITERAL     
+    NONZERO-DIGIT DIGIT*                -> DECIMAL-LITERAL     
+    "0" OCTAL-DIGIT*                    -> OCTAL-LITERAL       
+    "0x" HEXADECIMAL-DIGIT*             -> HEXADECIMAL-LITERAL 
+    "0X" HEXADECIMAL-DIGIT*             -> HEXADECIMAL-LITERAL 
+    UNSIGNED-SUFFIX LONG-SUFFIX?        -> INTEGER-SUFFIX      {prefer}
+    UNSIGNED-SUFFIX LONG-LONG-SUFFIX?   -> INTEGER-SUFFIX      
+    LONG-SUFFIX UNSIGNED-SUFFIX?        -> INTEGER-SUFFIX      
+    LONG-LONG-SUFFIX UNSIGNED-SUFFIX?   -> INTEGER-SUFFIX      
+    [uU]                                -> UNSIGNED-SUFFIX     
+    [lL]                                -> LONG-SUFFIX         
+    [l] [l]                             -> LONG-LONG-SUFFIX    
+    [L] [L]                             -> LONG-LONG-SUFFIX    
+
+  context-free syntax
+    INTEGER-LITERAL -> IntLiteral 
+
+  lexical restrictions
+    INTEGER-LITERAL -/- [\.]
+
+module IterationStatements
+imports Statements SelectionStatements ExpressionStatements Declarations
+
+exports
+  sorts IterationStm
+
+  context-free syntax
+    "while" "(" Expr ")" Stm                                   -> IterationStm {cons("While")}
+    "do" Stm "while" "(" Expr ")" ";"                          -> IterationStm {cons("Do")}
+    "for" "(" exp1:Expr? ";" exp2:Expr? ";" exp3:Expr? ")" Stm -> IterationStm {cons("For")}
+    "for" "(" Declaration exp1:Expr? ";" exp2:Expr? ")" Stm    -> IterationStm {cons("ForDec")}
+
+module JumpStatements
+imports Expressions Identifiers
+
+exports
+  sorts JumpStm
+
+  context-free syntax
+    "break" ";"             -> JumpStm {cons("Break")}
+    "continue" ";"          -> JumpStm {cons("Continue")}
+    "return" exp1:Expr? ";" -> JumpStm {cons("Return")}
+    "goto" Identifier ";"   -> JumpStm {cons("Goto")}
+
+module Keywords
+imports Layout Identifiers
+
+exports
+  context-free syntax
+    "auto"       -> Identifier {reject}
+    "break"      -> Identifier {reject}
+    "case"       -> Identifier {reject}
+    "char"       -> Identifier {reject}
+    "const"      -> Identifier {reject}
+    "continue"   -> Identifier {reject}
+    "default"    -> Identifier {reject}
+    "do"         -> Identifier {reject}
+    "double"     -> Identifier {reject}
+    "else"       -> Identifier {reject}
+    "enum"       -> Identifier {reject}
+    "extern"     -> Identifier {reject}
+    "float"      -> Identifier {reject}
+    "for"        -> Identifier {reject}
+    "goto"       -> Identifier {reject}
+    "if"         -> Identifier {reject}
+    "inline"     -> Identifier {reject}
+    "int"        -> Identifier {reject}
+    "long"       -> Identifier {reject}
+    "register"   -> Identifier {reject}
+    "restrict"   -> Identifier {reject}
+    "return"     -> Identifier {reject}
+    "short"      -> Identifier {reject}
+    "signed"     -> Identifier {reject}
+    "sizeof"     -> Identifier {reject}
+    "static"     -> Identifier {reject}
+    "struct"     -> Identifier {reject}
+    "switch"     -> Identifier {reject}
+    "typedef"    -> Identifier {reject}
+    "union"      -> Identifier {reject}
+    "unsigned"   -> Identifier {reject}
+    "void"       -> Identifier {reject}
+    "volatile"   -> Identifier {reject}
+    "while"      -> Identifier {reject}
+    "_Bool"      -> Identifier {reject}
+    "_Complex"   -> Identifier {reject}
+    "_Imaginary" -> Identifier {reject}
+
+  lexical restrictions
+    "auto" -/- [a-zA-Z0-9\_]
+    "break" -/- [a-zA-Z0-9\_]
+    "case" -/- [a-zA-Z0-9\_]
+    "char" -/- [a-zA-Z0-9\_]
+    "const" -/- [a-zA-Z0-9\_]
+    "continue" -/- [a-zA-Z0-9\_]
+    "default" -/- [a-zA-Z0-9\_]
+    "do" -/- [a-zA-Z0-9\_]
+    "double" -/- [a-zA-Z0-9\_]
+    "else" -/- [a-zA-Z0-9\_]
+    "enum" -/- [a-zA-Z0-9\_]
+    "extern" -/- [a-zA-Z0-9\_]
+    "float" -/- [a-zA-Z0-9\_]
+    "for" -/- [a-zA-Z0-9\_]
+    "goto" -/- [a-zA-Z0-9\_]
+    "if" -/- [a-zA-Z0-9\_]
+    "inline" -/- [a-zA-Z0-9\_]
+    "int" -/- [a-zA-Z0-9\_]
+    "long" -/- [a-zA-Z0-9\_]
+    "register" -/- [a-zA-Z0-9\_]
+    "restrict" -/- [a-zA-Z0-9\_]
+    "return" -/- [a-zA-Z0-9\_]
+    "short" -/- [a-zA-Z0-9\_]
+    "signed" -/- [a-zA-Z0-9\_]
+    "sizeof" -/- [a-zA-Z0-9\_]
+    "static" -/- [a-zA-Z0-9\_]
+    "struct" -/- [a-zA-Z0-9\_]
+    "switch" -/- [a-zA-Z0-9\_]
+    "typedef" -/- [a-zA-Z0-9\_]
+    "union" -/- [a-zA-Z0-9\_]
+    "unsigned" -/- [a-zA-Z0-9\_]
+    "void" -/- [a-zA-Z0-9\_]
+    "volatile" -/- [a-zA-Z0-9\_]
+    "while" -/- [a-zA-Z0-9\_]
+    "_Bool" -/- [a-zA-Z0-9\_]
+    "_Complex" -/- [a-zA-Z0-9\_]
+    "_Imaginary" -/- [a-zA-Z0-9\_]
+
+module LabeledStatements
+imports Identifiers Statements ConstantExpressions
+
+exports
+  sorts LabeledStm
+
+  context-free syntax
+    Identifier ":" Stm          -> LabeledStm {cons("Label")}
+    "case" ConstantExpr ":" Stm -> LabeledStm {cons("Case")}
+    "default" ":" Stm           -> LabeledStm {cons("Default")}
+
+module Layout
+exports
+  sorts ASTERISK
+
+exports
+  lexical syntax
+    [\*]                            -> ASTERISK 
+    [\ \t\r\n\11\12]                -> LAYOUT   
+    "//" ~[\n\r]* [\n\r]            -> LAYOUT   
+    "/*" ( ~[\*] | ASTERISK )* "*/" -> LAYOUT   
+
+  lexical restrictions
+    ASTERISK -/- [\/]
+
+  context-free restrictions
+    LAYOUT? -/- [\ \t\r\n\11\12] | [\/] . [\/\*]
+
+module Literals
+imports CharLiterals EnumSpecifiers FloatLiterals IntLiterals Layout
+        StringLiterals
+
+exports
+  sorts Literal
+
+  context-free syntax
+    IntLiteral   -> Literal {cons("IntLit")}
+    CharLiteral  -> Literal {cons("CharLit")}
+    FloatLiteral -> Literal {cons("FloatLit")}
+
+module LogicalAndExpressions
+imports OrExpressions
+
+exports
+  sorts LogicalAndExpr
+
+  context-free syntax
+    OrExpr                     -> LogicalAndExpr 
+    LogicalAndExpr "&&" OrExpr -> LogicalAndExpr {cons("LogicalAnd")}
+
+module LogicalOrExpressions
+imports LogicalAndExpressions
+
+exports
+  sorts LogicalOrExpr
+
+  context-free syntax
+    LogicalAndExpr                    -> LogicalOrExpr 
+    LogicalOrExpr "||" LogicalAndExpr -> LogicalOrExpr {cons("LogicalOr")}
+
+module MultiplicativeExpressions
+imports CastExpressions
+
+exports
+  sorts MultiplicativeExpr
+
+  context-free syntax
+    CastExpr                        -> MultiplicativeExpr 
+    MultiplicativeExpr "*" CastExpr -> MultiplicativeExpr {cons("Mul")}
+    MultiplicativeExpr "/" CastExpr -> MultiplicativeExpr {cons("Div")}
+    MultiplicativeExpr "%" CastExpr -> MultiplicativeExpr {cons("Mod")}
+
+module ParameterDeclarations
+imports AssignmentExpressions Declarators Specifiers TypeIds
+
+exports
+  sorts ParameterList ParameterDeclaration
+
+exports
+  sorts ParameterTypeList
+
+  context-free syntax
+    ParameterList                                  -> ParameterTypeList    
+    ParameterList "," "..."                        -> ParameterTypeList    {cons("VarArgs")}
+    pd:{ParameterDeclaration ","}+                 -> ParameterList        {cons("ParamList")}
+    DeclarationSpecifierSeq Declarator             -> ParameterDeclaration {cons("ParamDec")}
+    DeclarationSpecifierSeq ad:AbstractDeclarator? -> ParameterDeclaration {cons("ParamDecAbstr"), avoid}
+
+module PostfixExpressions
+imports AssignmentExpressions Expressions Initializers PrimaryExpressions
+        TypeIds
+
+exports
+  sorts PostfixExpr
+
+  context-free syntax
+    PrimaryExpr                                  -> PostfixExpr {cons("PrimaryExpr")}
+    PostfixExpr "[" Expr "]"                     -> PostfixExpr {cons("ArraySubscript")}
+    PostfixExpr "(" expr:Expr? ")"               -> PostfixExpr {cons("Call")}
+    PostfixExpr "." Identifier                   -> PostfixExpr {cons("MemberAccess")}
+    PostfixExpr "->" Identifier                  -> PostfixExpr {cons("PMemberAccess")}
+    PostfixExpr "++"                             -> PostfixExpr {cons("PostIncr")}
+    PostfixExpr "--"                             -> PostfixExpr {cons("PostDecr")}
+    "(" TypeName ")" "{" InitializerList "}"     -> PostfixExpr {cons("PostfixExpr")}
+    "(" TypeName ")" "{" InitializerList "," "}" -> PostfixExpr {cons("PostfixExprTrComma")}
+
+module PrimaryExpressions
+imports Expressions Literals
+
+exports
+  sorts PrimaryExpr
+
+  context-free syntax
+    Identifier     -> PrimaryExpr 
+    Literal        -> PrimaryExpr {cons("Lit")}
+    StringLiteral+ -> PrimaryExpr {cons("StringLitSeq")}
+    "(" Expr ")"   -> PrimaryExpr {cons("ParenExpr")}
+
+module RelationalExpressions
+imports ShiftExpressions
+
+exports
+  sorts RelationalExpr
+
+  context-free syntax
+    ShiftExpr                     -> RelationalExpr 
+    RelationalExpr "<" ShiftExpr  -> RelationalExpr {cons("Lt")}
+    RelationalExpr ">" ShiftExpr  -> RelationalExpr {cons("Gt")}
+    RelationalExpr "<=" ShiftExpr -> RelationalExpr {cons("LtEq")}
+    RelationalExpr ">=" ShiftExpr -> RelationalExpr {cons("GtEq")}
+
+module SelectionStatements
+imports AssignmentExpressions Expressions Statements
+
+exports
+  sorts SelectionStm
+
+  context-free syntax
+    "if" "(" Expr ")" Stm                    -> SelectionStm {cons("If"), prefer}
+    "if" "(" Expr ")" st1:Stm "else" st2:Stm -> SelectionStm {cons("If")}
+    "switch" "(" Expr ")" Stm                -> SelectionStm {cons("Switch")}
+
+module ShiftExpressions
+imports AdditiveExpressions
+
+exports
+  sorts ShiftExpr
+
+  context-free syntax
+    AdditiveExpr                -> ShiftExpr 
+    ShiftExpr "<<" AdditiveExpr -> ShiftExpr {cons("LeftShift")}
+    ShiftExpr ">>" AdditiveExpr -> ShiftExpr {cons("RightShift")}
+
+module SpecifierQualifiers
+imports TypeQualifiers TypeSpecifiers
+
+exports
+  sorts SpecifierQualifier
+
+exports
+  sorts SpecifierQualifierList
+
+  context-free syntax
+    TypeSpecifier          -> SpecifierQualifier     {cons("TypeSpecifier")}
+    TypeQualifier          -> SpecifierQualifier     {cons("TypeQualifier")}
+    sq:SpecifierQualifier+ -> SpecifierQualifierList {cons("SpecifierQualifierList")}
+
+module Specifiers
+imports FunctionSpecifiers StorageClassSpecifiers TypeSpecifiers TypeQualifiers
+
+exports
+  sorts DeclarationSpecifier DeclarationSpecifierSeq
+
+  context-free syntax
+    StorageClassSpecifier       -> DeclarationSpecifier    {cons("StorageClassSpecifier")}
+    TypeSpecifier               -> DeclarationSpecifier    {cons("TypeSpecifier")}
+    TypeQualifier               -> DeclarationSpecifier    {cons("TypeQualifier")}
+    FunctionSpecifier           -> DeclarationSpecifier    {cons("FunSpecifier")}
+    decls:DeclarationSpecifier+ -> DeclarationSpecifierSeq {cons("DecSpecifierSeq")}
+
+module Statements
+imports CompoundStatements ExpressionStatements IterationStatements
+        JumpStatements LabeledStatements SelectionStatements
+
+exports
+  sorts Stm
+
+  context-free syntax
+    LabeledStm   -> Stm {cons("LabeledStm")}
+    CompoundStm  -> Stm 
+    ExprStm      -> Stm 
+    SelectionStm -> Stm {cons("SelectionStm")}
+    IterationStm -> Stm {cons("IterationStm")}
+    JumpStm      -> Stm {cons("JumpStm")}
+
+module StorageClassSpecifiers
+imports 
+
+exports
+  sorts StorageClassSpecifier
+
+  context-free syntax
+    "typedef"  -> StorageClassSpecifier {cons("Typedef")}
+    "auto"     -> StorageClassSpecifier {cons("Auto")}
+    "register" -> StorageClassSpecifier {cons("Register")}
+    "static"   -> StorageClassSpecifier {cons("Static")}
+    "extern"   -> StorageClassSpecifier {cons("Extern")}
+
+module StringLiterals
+imports Characters EscapeSequences
+
+exports
+  sorts STRING-LITERAL S-CHAR S-CHAR-SEQUENCE
+
+exports
+  sorts StringLiteral
+
+  lexical syntax
+    "\"" S-CHAR-SEQUENCE? "\""  -> STRING-LITERAL  
+    "L\"" S-CHAR-SEQUENCE? "\"" -> STRING-LITERAL  
+    S-CHAR+                     -> S-CHAR-SEQUENCE 
+    S-SOURCE-CHARACTER          -> S-CHAR          
+    ESCAPE-SEQUENCE             -> S-CHAR          
+    UNIVERSAL-CHARACTER-NAME    -> S-CHAR          
+
+  context-free syntax
+    STRING-LITERAL -> StringLiteral 
+
+module StructOrUnionSpecifiers
+imports AssignmentExpressions ConstantExpressions Declarators Identifiers
+        SpecifierQualifiers
+
+exports
+  sorts StructDeclaration StructDeclarator StructDeclaratorList
+        StructDeclarationList StructOrUnion
+
+exports
+  sorts StructOrUnionSpecifier
+
+  context-free syntax
+    StructOrUnion ident:Identifier? "{" StructDeclarationList "}" -> StructOrUnionSpecifier {cons("StructOrUnionDec")}
+    StructOrUnion Identifier                                      -> StructOrUnionSpecifier {cons("StructOrUnionSpecifier")}
+    "struct"                                                      -> StructOrUnion          {cons("Struct")}
+    "union"                                                       -> StructOrUnion          {cons("Union")}
+    st:StructDeclaration+                                         -> StructDeclarationList  {cons("StructDecList")}
+    SpecifierQualifierList StructDeclaratorList ";"               -> StructDeclaration      {cons("StructDec")}
+    st:{StructDeclarator ","}+                                    -> StructDeclaratorList   {cons("StructDeclList")}
+    Declarator                                                    -> StructDeclarator       
+    dl:Declarator? ":" ConstantExpr                               -> StructDeclarator       {cons("StructDeclarator")}
+
+module TranslationUnits
+imports Declarations Includes
+
+exports
+  sorts ExternalDeclarationSeq
+
+exports
+  sorts TranslationUnit ExternalDeclaration
+
+  context-free syntax
+    ExternalDeclarationSeq? -> TranslationUnit        {cons("TranslationUnit")}
+    ed:ExternalDeclaration+ -> ExternalDeclarationSeq {cons("ExtDecSeq")}
+    FunctionDefinition      -> ExternalDeclaration    
+    Declaration             -> ExternalDeclaration    {cons("ExtDec")}
+    Include                 -> ExternalDeclaration    
+
+  context-free start-symbols
+    ExternalDeclarationSeq
+
+module TypeIds
+imports AssignmentExpressions ParameterDeclarations TypeQualifiers
+        TypeSpecifiers
+
+exports
+  sorts TypeName AbstractDeclarator DirectAbstractDeclarator
+
+  context-free syntax
+    SpecifierQualifierList ad:AbstractDeclarator?                -> TypeName                 {cons("TypeName")}
+    PointerSeq                                                   -> AbstractDeclarator       
+    pt:PointerSeq? DirectAbstractDeclarator                      -> AbstractDeclarator       {cons("AbstrDeclPointer")}
+    "(" AbstractDeclarator ")"                                   -> DirectAbstractDeclarator {cons("AbstrDeclPar")}
+    dad:DirectAbstractDeclarator? "[" ae:AssignmentExpr? "]"     -> DirectAbstractDeclarator {cons("AbstrDeclAssign")}
+    dad:DirectAbstractDeclarator? "[" "*" "]"                    -> DirectAbstractDeclarator {cons("AbstrDeclDeref")}
+    dad:DirectAbstractDeclarator? "(" ptl:ParameterTypeList? ")" -> DirectAbstractDeclarator {cons("AbstrDeclParamTypes")}
+
+  lexical restrictions
+    "+" -/- [\+]
+    "-" -/- [\-]
+
+module TypeQualifiers
+exports
+  sorts TypeQualifier TypeQualifierList
+
+  context-free syntax
+    "const"        -> TypeQualifier     {cons("Const")}
+    "restrict"     -> TypeQualifier     {cons("Restrict")}
+    "volatile"     -> TypeQualifier     {cons("Volatile")}
+    TypeQualifier+ -> TypeQualifierList {cons("TypeQualifierList")}
+
+module TypeSpecifiers
+imports EnumSpecifiers Identifiers StructOrUnionSpecifiers TypeQualifiers
+
+exports
+  sorts TypedefName
+
+exports
+  sorts TypeSpecifier
+
+  context-free syntax
+    "void"                 -> TypeSpecifier {cons("Void")}
+    "char"                 -> TypeSpecifier {cons("Char")}
+    "short"                -> TypeSpecifier {cons("Short")}
+    "int"                  -> TypeSpecifier {cons("Int")}
+    "long"                 -> TypeSpecifier {cons("Long")}
+    "float"                -> TypeSpecifier {cons("Float")}
+    "double"               -> TypeSpecifier {cons("Double")}
+    "signed"               -> TypeSpecifier {cons("Signed")}
+    "unsigned"             -> TypeSpecifier {cons("Unsigned")}
+    "_Bool"                -> TypeSpecifier {cons("Bool")}
+    "_Complex"             -> TypeSpecifier {cons("Complex")}
+    "_Imaginary"           -> TypeSpecifier {cons("Imaginary")}
+    StructOrUnionSpecifier -> TypeSpecifier {cons("StructOrUnion")}
+    EnumSpecifier          -> TypeSpecifier {cons("Enum")}
+    TypedefName            -> TypeSpecifier {cons("TypedefName")}
+    Identifier             -> TypedefName   
+
+module UnaryExpressions
+imports CastExpressions PostfixExpressions TypeIds
+
+exports
+  sorts UnaryOperator
+
+exports
+  sorts UnaryExpr
+
+  context-free syntax
+    PostfixExpr               -> UnaryExpr     
+    "++" UnaryExpr            -> UnaryExpr     {cons("PreIncr")}
+    "--" UnaryExpr            -> UnaryExpr     {cons("PreDecr")}
+    UnaryOperator CastExpr    -> UnaryExpr     {cons("CastExpr")}
+    "sizeof" UnaryExpr        -> UnaryExpr     {cons("SizeOf")}
+    "sizeof" "(" TypeName ")" -> UnaryExpr     {cons("SizeOfType")}
+    "*"                       -> UnaryOperator {cons("Deref")}
+    "&"                       -> UnaryOperator {cons("Ref")}
+    "+"                       -> UnaryOperator {cons("Plus")}
+    "-"                       -> UnaryOperator {cons("Minus")}
+    "!"                       -> UnaryOperator {cons("Not")}
+    "~"                       -> UnaryOperator {cons("Complement")}
+
+module Includes
+imports StringLiterals
+
+exports
+  sorts IncludeFile
+
+  lexical syntax
+    S-CHAR-SEQUENCE? -> IncludeFile 
+
+exports
+  sorts Include
+
+  context-free syntax
+    "#" "include" "<" IncludeFile ">"   -> Include {cons("StdInclude")}
+    "#" "include" "\"" IncludeFile "\"" -> Include {cons("Include")}
+
+module C
+imports AdditiveExpressions AndExpressions AssignmentExpressions MainC
+        CastExpressions CharLiterals Characters CompoundStatements
+        CondExpressions ConstantExpressions Declarations Declarators
+        Designations EnumSpecifiers EqualityExpressions EscapeSequences
+        ExclusiveOrExpressions Expressions ExpressionStatements FloatLiterals
+        FunctionDefinitions FunctionSpecifiers Identifiers OrExpressions
+        InitDeclarators Initializers IntLiterals IterationStatements
+        JumpStatements Keywords LabeledStatements Layout Literals
+        LogicalAndExpressions LogicalOrExpressions MultiplicativeExpressions
+        ParameterDeclarations PostfixExpressions PrimaryExpressions
+        RelationalExpressions SelectionStatements ShiftExpressions
+        SpecifierQualifiers Specifiers Statements StorageClassSpecifiers
+        StringLiterals StructOrUnionSpecifiers TranslationUnits TypeIds
+        TypeQualifiers TypeSpecifiers UnaryExpressions Includes
+
+exports
+  context-free start-symbols
+    TranslationUnit ExternalDeclarationSeq
+
+module org/sugarj/languages/C
+imports C
+          [ AdditiveExpr             => CAdditiveExpr
+            AndExpr                  => CAndExpr
+            AssignmentExpr           => CAssignmentExpr
+            AssignmentOperator       => CAssignmentOperator
+            CastExpr                 => CCastExpr
+            CharLiteral              => CCharLiteral
+            CompoundStm              => CCompoundStm
+            BlockItemList            => CBlockItemList
+            BlockItem                => CBlockItem
+            CondExpr                 => CCondExpr
+            ConstantExpr             => CConstantExpr
+            Declaration              => CDeclaration
+            Declarator               => CDeclarator
+            DirectDeclarator         => CDirectDeclarator
+            PointerSeq               => CPointerSeq
+            Pointer                  => CPointer
+            IdentifierList           => CIdentifierList
+            Designation              => CDesignation
+            DesignatorList           => CDesignatorList
+            Designator               => CDesignator
+            EnumSpecifier            => CEnumSpecifier
+            EnumeratorList           => CEnumeratorList
+            EnumeratorDefinition     => CEnumeratorDefinition
+            EnumerationConstant      => CEnumerationConstant
+            EqualityExpr             => CEqualityExpr
+            ExclusiveOrExpr          => CExclusiveOrExpr
+            Expr                     => CExpr
+            ExprStm                  => CExprStm
+            FloatLiteral             => CFloatLiteral
+            FunctionDefinition       => CFunctionDefinition
+            DeclarationList          => CDeclarationList
+            FunctionSpecifier        => CFunctionSpecifier
+            Identifier               => CIdentifier
+            OrExpr                   => COrExpr
+            InitDeclaratorList       => CInitDeclaratorList
+            InitDeclarator           => CInitDeclarator
+            Initializer              => CInitializer
+            InitializerSeq           => CInitializerSeq
+            InitializerList          => CInitializerList
+            IterationStm             => CIterationStm
+            JumpStm                  => CJumpStm
+            LabeledStm               => CLabeledStm
+            Literal                  => CLiteral
+            LogicalAndExpr           => CLogicalAndExpr
+            LogicalOrExpr            => CLogicalOrExpr
+            MultiplicativeExpr       => CMultiplicativeExpr
+            ParameterTypeList        => CParameterTypeList
+            ParameterList            => CParameterList
+            ParameterDeclaration     => CParameterDeclaration
+            PostfixExpr              => CPostfixExpr
+            PrimaryExpr              => CPrimaryExpr
+            RelationalExpr           => CRelationalExpr
+            SelectionStm             => CSelectionStm
+            ShiftExpr                => CShiftExpr
+            SpecifierQualifier       => CSpecifierQualifier
+            SpecifierQualifierList   => CSpecifierQualifierList
+            DeclarationSpecifier     => CDeclarationSpecifier
+            DeclarationSpecifierSeq  => CDeclarationSpecifierSeq
+            Stm                      => CStm
+            StorageClassSpecifier    => CStorageClassSpecifier
+            StringLiteral            => CStringLiteral
+            StructOrUnionSpecifier   => CStructOrUnionSpecifier
+            StructOrUnion            => CStructOrUnion
+            StructDeclarationList    => CStructDeclarationList
+            StructDeclaration        => CStructDeclaration
+            StructDeclaratorList     => CStructDeclaratorList
+            StructDeclarator         => CStructDeclarator
+            TranslationUnit          => CTranslationUnit
+            ExternalDeclarationSeq   => CExternalDeclarationSeq
+            ExternalDeclaration      => CExternalDeclaration
+            TypeName                 => CTypeName
+            AbstractDeclarator       => CAbstractDeclarator
+            DirectAbstractDeclarator => CDirectAbstractDeclarator
+            TypeQualifier            => CTypeQualifier
+            TypeQualifierList        => CTypeQualifierList
+            TypeSpecifier            => CTypeSpecifier
+            TypedefName              => CTypedefName
+            UnaryExpr                => CUnaryExpr
+            UnaryOperator            => CUnaryOperator
+            Include                  => CInclude ]

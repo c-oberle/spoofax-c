@@ -1,0 +1,1 @@
+Module("check",[Imports([Import("include/C"),Import("lib/editor-common.generated")]),Rules([])])

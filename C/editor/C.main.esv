@@ -1,0 +1,32 @@
+module C.main
+
+imports
+  C-Colorer
+  C-Completions
+  C-Folding
+  C-Menus
+  C-Refactorings
+  C-References
+  C-Syntax
+  C-Views
+
+language General properties
+  
+  name:          C
+  id:            C
+  extends:       Root
+  
+  description:   "Spoofax-generated editor for the C language"
+  url:           http://strategoxt.org
+  
+  extensions:    c
+  table:         include/C.tbl
+  start symbols: TranslationUnit
+  
+  provider:      include/c.ctree
+  provider:      include/c-java.jar
+  
+  observer:      editor-analyze (multifile)
+  disambiguator: disamb
+  
+  on save:       editor-save

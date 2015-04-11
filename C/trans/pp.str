@@ -1,0 +1,18 @@
+module pp
+
+imports
+
+	libstratego-gpp
+
+rules
+	
+  pp-table-generated = <parse-pptable-file> "syntax/C.generated.pp"
+  pp-table-user = <parse-pptable-file> "syntax/C.pp"
+	
+  pp-C-string =
+    ast2abox(|[<pp-table-generated>, <pp-table-user>])
+   // ; debug(!"boxes: ")
+    ; box2text-string(|200)
+      
+  pp-debug = pp-C-string <+ !"PP failed"
+
